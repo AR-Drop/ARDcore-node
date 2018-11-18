@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+var ARDcore = require('../lib/cli/ARDcore');
+ARDcore();
