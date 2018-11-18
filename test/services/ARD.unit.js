@@ -769,7 +769,7 @@ describe('ARD Service', function() {
         }
       };
       var ARDd = new ARDService(config);
-      ARDd._getDefaultConf().rpcport.should.equal(8766);
+      ARDd._getDefaultConf().rpcport.should.equal(2831);
     });
     it('will get default rpc port for testnet', function() {
       var config = {
@@ -4955,8 +4955,8 @@ describe('ARD Service', function() {
         should.equal(info.relayFee, 10);
         should.equal(info.errors, '');
         info.network.should.equal('testnet');
-        should.equal(info.subversion, '/Satoshi:0.15.99/'); 
-		should.equal(info.localServices, '000000000000000d'); 
+        should.equal(info.subversion, '/Satoshi:0.15.99/');
+		should.equal(info.localServices, '000000000000000d');
 		done();
       });
     });

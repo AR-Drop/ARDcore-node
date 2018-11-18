@@ -4,10 +4,10 @@
   "author": "Under",
   "version": "1.0.3",
   "main": "./index.js",
-  "repository": "git://github.com/underdarkskies/ARDcore-node.git",
-  "homepage": "https://github.com/underdarkskies/ARDcore-node",
+  "repository": "git://github.com/wkibbler/ARDcore-node.git",
+  "homepage": "https://github.com/wkibbler/ARDcore-node",
   "bugs": {
-    "url": "https://github.com/underdarkskies/ARDcore-node/issues"
+    "url": "https://github.com/wkibbler/ARDcore-node/issues"
   },
   "bin": {
     "ARDcore-node": "./bin/ARDcore-node",
@@ -24,12 +24,12 @@
   },
   "tags": [
     "ARD",
-    "ARDnd"
+    "ARDd"
   ],
   "dependencies": {
     "async": "^2.5.0",
-    "ARDd-rpc": "underdarkskies/ARDd-rpc",
-    "ARDcore-lib": "underdarkskies/ARDcore-lib",
+    "ARDd-rpc": "wkibbler/ARDd-rpc",
+    "ARDcore-lib": "wkibbler/ARDcore-lib",
     "body-parser": "^1.18.3",
     "colors": "^1.1.2",
     "commander": "^2.8.1",
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "benchmark": "1.0.0",
-    "ARDcore-p2p": "underdarkskies/ARDcore-p2p",
+    "ARDcore-p2p": "wkibbler/ARDcore-p2p",
     "chai": "^4.1.2",
     "coveralls": "^3.0.1",
     "istanbul": "^0.4.3",
