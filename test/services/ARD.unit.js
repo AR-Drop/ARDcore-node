@@ -308,12 +308,12 @@ describe('ARD Service', function() {
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
-      ARDd.subscriptions.address['RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN'] = [emitter1, emitter2];
+      ARDd.subscriptions.address['AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC'] = [emitter1, emitter2];
       sinon.spy(ARDd, 'unsubscribeAddressAll');
       ARDd.unsubscribeAddress(emitter1);
       ARDd.unsubscribeAddressAll.callCount.should.equal(1);
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
-      ARDd.subscriptions.address['RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN'].length.should.equal(1);
+      ARDd.subscriptions.address['AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC'].length.should.equal(1);
     });
   });
 
@@ -330,7 +330,7 @@ describe('ARD Service', function() {
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
-      ARDd.subscriptions.address['RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN'] = [emitter1, emitter2];
+      ARDd.subscriptions.address['AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC'] = [emitter1, emitter2];
       ARDd.subscriptions.address['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'] = [emitter2];
       ARDd.subscriptions.address['rAfsiNFiHsvDwEA1JsaE9Qmad5CgPVbELh'] = [emitter1];
       ARDd.unsubscribeAddress(emitter1);
@@ -2268,7 +2268,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: false
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
@@ -2279,7 +2279,7 @@ describe('ARD Service', function() {
       var ARDd = new ARDService(baseConfig);
       var expectedUtxos = [
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 1,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2297,7 +2297,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: false
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
@@ -2311,7 +2311,7 @@ describe('ARD Service', function() {
       var ARDd = new ARDService(baseConfig);
       var expectedUtxos = [
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 1,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2330,7 +2330,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: false
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
@@ -2354,7 +2354,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2363,14 +2363,14 @@ describe('ARD Service', function() {
         {
           txid: 'f637384e9f81f18767ea50e00bce58fc9848b6588a1130529eebba22a410155f',
           satoshis: 100000,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342833133
         },
         {
           txid: 'f71bccef3a8f5609c7f016154922adbfe0194a96fb17a798c24077c18d0a9345',
           satoshis: 400000,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 1,
           timestamp: 1461342954813
         }
@@ -2378,7 +2378,7 @@ describe('ARD Service', function() {
       var ARDd = new ARDService(baseConfig);
       var confirmedUtxos = [
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 1,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2388,7 +2388,7 @@ describe('ARD Service', function() {
       ];
       var expectedUtxos = [
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           outputIndex: 1,
           satoshis: 400000,
           script: '76a914809dc14496f99b6deb722cf46d89d22f4beb8efd88ac',
@@ -2396,7 +2396,7 @@ describe('ARD Service', function() {
           txid: 'f71bccef3a8f5609c7f016154922adbfe0194a96fb17a798c24077c18d0a9345'
         },
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           outputIndex: 0,
           satoshis: 100000,
           script: '76a914809dc14496f99b6deb722cf46d89d22f4beb8efd88ac',
@@ -2417,7 +2417,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: true
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
@@ -2432,7 +2432,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2441,7 +2441,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 1,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2451,7 +2451,7 @@ describe('ARD Service', function() {
       var ARDd = new ARDService(baseConfig);
       var confirmedUtxos = [
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 1,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2459,7 +2459,7 @@ describe('ARD Service', function() {
           height: 207111
         },
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 2,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2480,7 +2480,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: true
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
@@ -2494,7 +2494,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2503,7 +2503,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2512,7 +2512,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 1,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2521,7 +2521,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: 100000,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 1,
           script: '76a914809dc14496f99b6deb722cf46d89d22f4beb8efd88ac',
           timestamp: 1461342833133
@@ -2530,7 +2530,7 @@ describe('ARD Service', function() {
       var ARDd = new ARDService(baseConfig);
       var confirmedUtxos = [
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 0,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2538,7 +2538,7 @@ describe('ARD Service', function() {
           height: 207111
         },
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 1,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2546,7 +2546,7 @@ describe('ARD Service', function() {
           height: 207111
         },
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 2,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2567,7 +2567,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: true
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
@@ -2581,28 +2581,28 @@ describe('ARD Service', function() {
         {
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           satoshis: 7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707724
         },
         {
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           satoshis: 7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 1,
           timestamp: 1461342707724
         },
         {
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           satoshis: 7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           timestamp: 1461342707724,
           index: 2,
         },
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2611,7 +2611,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2620,7 +2620,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: -7679241,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 1,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2629,7 +2629,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: 100000,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 1,
           timestamp: 1461342833133
         }
@@ -2649,7 +2649,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: true
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
@@ -2668,7 +2668,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: 0,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707725,
           prevtxid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
@@ -2678,7 +2678,7 @@ describe('ARD Service', function() {
       var ARDd = new ARDService(baseConfig);
       var confirmedUtxos = [
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 1,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2699,7 +2699,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: true
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
@@ -2713,7 +2713,7 @@ describe('ARD Service', function() {
         {
           txid: 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce',
           satoshis: 10000,
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           index: 0,
           timestamp: 1461342707725
         }
@@ -2721,7 +2721,7 @@ describe('ARD Service', function() {
       var ARDd = new ARDService(baseConfig);
       var confirmedUtxos = [
         {
-          address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
+          address: 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC',
           txid: '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0',
           outputIndex: 1,
           script: '76a914f399b4b8894f1153b96fce29f05e6e116eb4c21788ac',
@@ -2742,7 +2742,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: true
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
@@ -2761,7 +2761,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: true
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err) {
         err.should.be.instanceOf(Error);
         done();
@@ -2776,7 +2776,7 @@ describe('ARD Service', function() {
         }
       });
       var options = {};
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressUnspentOutputs(address, options, function(err) {
         getAddressMempool.callCount.should.equal(1);
         done();
@@ -2894,7 +2894,7 @@ describe('ARD Service', function() {
         }
       });
       var options = {};
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressTxids(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
@@ -2910,7 +2910,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: false
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressTxids(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
@@ -2940,7 +2940,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: false
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressTxids(address, options, function(err, txids) {
         if (err) {
           return done(err);
@@ -2966,7 +2966,7 @@ describe('ARD Service', function() {
       var options = {
         queryMempool: false
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressTxids(address, options, function(err, txids) {
         if (err) {
           return done(err);
@@ -3004,7 +3004,7 @@ describe('ARD Service', function() {
         start: 4,
         end: 2
       };
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressTxids(address, options, function(err, txids) {
         if (err) {
           return done(err);
@@ -3051,7 +3051,7 @@ describe('ARD Service', function() {
           getAddressMempool: getAddressMempool
         }
       });
-      var address = 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja';
+      var address = 'AZuRvvyzf1DUzofs12jhh3c12c8Q1c9unC';
       ARDd.getAddressTxids(address, {queryMempool: false}, function(err, txids) {
         if (err) {
           return done(err);
