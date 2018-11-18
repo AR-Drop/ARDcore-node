@@ -6,7 +6,7 @@ root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
 platform=`uname -a | awk '{print tolower($1)}'`
 arch=`uname -m`
 version="2.1.2"
-url="https://github.com/underdarkskies/ARDcoin/releases/download"
+url="https://github.com/underdarkskies/ARD/releases/download"
 tag="v2.1.2"
 
 if [ "${platform}" == "linux" ]; then
@@ -18,7 +18,7 @@ if [ "${platform}" == "linux" ]; then
 elif [ "${platform}" == "darwin" ]; then
     tarball_name="ARD-${version}-osx64.tar.gz"
 else
-    echo "ARDcoin binary distribution not available for platform and architecture"
+    echo "ARD binary distribution not available for platform and architecture"
     exit -1
 fi
 
@@ -29,7 +29,7 @@ download_ARDd() {
 
     cd "${root_dir}/bin"
 
-    echo "Downloading ARDcoin: ${binary_url}"
+    echo "Downloading ARD: ${binary_url}"
 
     is_curl=true
     if hash curl 2>/dev/null; then
@@ -48,7 +48,7 @@ download_ARDd() {
             wget $shasums_url
         fi
         if test -e "${tarball_name}"; then
-            echo "Unpacking ARDcoin distribution"
+            echo "Unpacking ARD distribution"
             tar -xvzf $tarball_name
             if test $? -eq 0; then
                 ln -sf "ARD-${version}/bin/ARDd"
@@ -56,12 +56,12 @@ download_ARDd() {
             fi
         fi
     fi
-    echo "ARDcoin binary distribution could not be downloaded"
+    echo "ARD binary distribution could not be downloaded"
     exit -1
 }
 
 verify_download() {
-    echo "Verifying signatures of ARDcoin download"
+    echo "Verifying signatures of ARD download"
     gpg --verify "${root_dir}/bin/SHA256SUMS.asc"
 
     if hash shasum 2>/dev/null; then
@@ -98,10 +98,10 @@ while [ -n "$1" ]; do
   value="$2"
 
   case $param in
-    --skip-ARDcoin-download)
+    --skip-ARD-download)
           download=0
           ;;
-    --verify-ARDcoin-download)
+    --verify-ARD-download)
           verify=1
           ;;
   esac

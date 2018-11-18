@@ -4,7 +4,7 @@ var path = require('path');
 var async = require('async');
 var spawn = require('child_process').spawn;
 
-var ARDcoinRPC = require('ARDd-rpc');
+var ARDRPC = require('ARDd-rpc');
 var rimraf = require('rimraf');
 var ARDcore = require('ARDcore-lib');
 var chai = require('chai');
@@ -14,9 +14,9 @@ var index = require('..');
 var log = index.log;
 log.debug = function() {};
 var ARDcoreNode = index.Node;
-var ARDcoinService = index.services.ARDcoin;
+var ARDService = index.services.ARD;
 
-describe('ARDcoin Cluster', function() {
+describe('ARD Cluster', function() {
   var node;
   var daemons = [];
   var execPath = path.resolve(__dirname, '../bin/ARDd');
@@ -24,7 +24,7 @@ describe('ARDcoin Cluster', function() {
     {
       datadir: path.resolve(__dirname, './data/node1'),
       conf: path.resolve(__dirname, './data/node1/ARD.conf'),
-      rpcuser: 'ARDcoin',
+      rpcuser: 'ARD',
       rpcpassword: 'local321',
       rpcport: 30521,
       zmqpubrawtx: 'tcp://127.0.0.1:30611',
@@ -33,7 +33,7 @@ describe('ARDcoin Cluster', function() {
     {
       datadir: path.resolve(__dirname, './data/node2'),
       conf: path.resolve(__dirname, './data/node2/ARD.conf'),
-      rpcuser: 'ARDcoin',
+      rpcuser: 'ARD',
       rpcpassword: 'local321',
       rpcport: 30522,
       zmqpubrawtx: 'tcp://127.0.0.1:30622',
@@ -42,7 +42,7 @@ describe('ARDcoin Cluster', function() {
     {
       datadir: path.resolve(__dirname, './data/node3'),
       conf: path.resolve(__dirname, './data/node3/ARD.conf'),
-      rpcuser: 'ARDcoin',
+      rpcuser: 'ARD',
       rpcpassword: 'local321',
       rpcport: 30523,
       zmqpubrawtx: 'tcp://127.0.0.1:30633',
@@ -67,7 +67,7 @@ describe('ARDcoin Cluster', function() {
 
         var process = spawn(execPath, opts, {stdio: 'inherit'});
 
-        var client = new ARDcoinRPC({
+        var client = new ARDRPC({
           protocol: 'http',
           host: '127.0.0.1',
           port: nodeConf.rpcport,
@@ -103,27 +103,27 @@ describe('ARDcoin Cluster', function() {
       services: [
         {
           name: 'ARDd',
-          module: ARDcoinService,
+          module: ARDService,
           config: {
             connect: [
               {
                 rpchost: '127.0.0.1',
                 rpcport: 30521,
-                rpcuser: 'ARDcoin',
+                rpcuser: 'ARD',
                 rpcpassword: 'local321',
                 zmqpubrawtx: 'tcp://127.0.0.1:30611'
               },
               {
                 rpchost: '127.0.0.1',
                 rpcport: 30522,
-                rpcuser: 'ARDcoin',
+                rpcuser: 'ARD',
                 rpcpassword: 'local321',
                 zmqpubrawtx: 'tcp://127.0.0.1:30622'
               },
               {
                 rpchost: '127.0.0.1',
                 rpcport: 30523,
-                rpcuser: 'ARDcoin',
+                rpcuser: 'ARD',
                 rpcpassword: 'local321',
                 zmqpubrawtx: 'tcp://127.0.0.1:30633'
               }

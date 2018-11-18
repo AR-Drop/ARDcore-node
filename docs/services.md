@@ -37,7 +37,7 @@ If, instead, you would like to run a custom node, you can include services by in
 var ARDcore = require('ARDcore-node');
 
 //Services
-var ARDcoin = ARDcore.services.ARDcoin;
+var ARD = ARDcore.services.ARD;
 var Web = ARDcore.services.Web;
 
 var myNode = new ARDcore.Node({
@@ -45,7 +45,7 @@ var myNode = new ARDcore.Node({
   services: [
     {
       name: 'ARDd',
-      module: ARDcoin,
+      module: ARD,
       config: {
         spawn: {
           datadir: '/home/<username>/.ARD',
