@@ -15,11 +15,11 @@ var node;
 
 var should = chai.should();
 
-var RavencoinRPC = require('ARDd-rpc');
+var ARDcoinRPC = require('ARDd-rpc');
 var index = require('..');
 var Transaction = ARDcore.Transaction;
-var RavencoreNode = index.Node;
-var RavencoinService = index.services.Ravencoin;
+var ARDcoreNode = index.Node;
+var ARDcoinService = index.services.ARDcoin;
 var testWIF = 'cSdkPxkAjA4HDr5VHgsebAPDEh9Gyub4HK8UJr2DFGGqKKy4K5sG';
 var testKey;
 var client;
@@ -49,7 +49,7 @@ describe('Node Functionality', function() {
         services: [
           {
             name: 'ARDd',
-            module: RavencoinService,
+            module: ARDcoinService,
             config: {
               spawn: {
                 datadir: datadir,
@@ -60,7 +60,7 @@ describe('Node Functionality', function() {
         ]
       };
 
-      node = new RavencoreNode(configuration);
+      node = new ARDcoreNode(configuration);
 
       regtest = ARDcore.Networks.get('regtest');
       should.exist(regtest);
@@ -74,7 +74,7 @@ describe('Node Functionality', function() {
           return done(err);
         }
 
-        client = new RavencoinRPC({
+        client = new ARDcoinRPC({
           protocol: 'http',
           host: '127.0.0.1',
           port: 30331,

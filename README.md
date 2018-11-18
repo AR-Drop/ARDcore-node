@@ -1,7 +1,7 @@
-Ravencore Node
+ARDcore Node
 ============
 
-A Ravencoin full node for building applications and services with Node.js. A node is extensible and can be configured to run additional services. At the minimum a node has an interface to [Ravencoin with additional indexing](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore) for more advanced address queries. Additional services can be enabled to make a node more useful such as exposing new APIs, running a block explorer and wallet service.
+A ARDcoin full node for building applications and services with Node.js. A node is extensible and can be configured to run additional services. At the minimum a node has an interface to [ARDcoin with additional indexing](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore) for more advanced address queries. Additional services can be enabled to make a node more useful such as exposing new APIs, running a block explorer and wallet service.
 
 ## Install
 
@@ -10,7 +10,7 @@ npm install -g ARDcore-node
 ARDcore-node start
 ```
 
-Note: For your convenience, we distribute ARDd binaries for x86_64 Linux and x86_64 Mac OS X. Upon npm install, the binaries for your platform will be downloaded. For more detailed installation instructions, or if you want to compile the project yourself, then please see the Ravencore branch of [Ravencoin with additional indexing](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore).
+Note: For your convenience, we distribute ARDd binaries for x86_64 Linux and x86_64 Mac OS X. Upon npm install, the binaries for your platform will be downloaded. For more detailed installation instructions, or if you want to compile the project yourself, then please see the ARDcore branch of [ARDcoin with additional indexing](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore).
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ Note: For your convenience, we distribute ARDd binaries for x86_64 Linux and x86
 
 ## Configuration
 
-Ravencore includes a Command Line Interface (CLI) for managing, configuring and interfacing with your Ravencore Node.
+ARDcore includes a Command Line Interface (CLI) for managing, configuring and interfacing with your ARDcore Node.
 
 ```bash
 ARDcore-node create -d <ARDcoin-data-dir> mynode
@@ -35,17 +35,17 @@ This will create a directory with configuration files for your node and install 
 
 ## Add-on Services
 
-There are several add-on services available to extend the functionality of Ravencore:
+There are several add-on services available to extend the functionality of ARDcore:
 
 - [Insight API](https://github.com/underdarkskies/insight-api)
 - [Insight UI](https://github.com/underdarkskies/insight-ui)
-- [Ravencore Wallet Service](https://github.com/underdarkskies/ARDcore-wallet-service)
+- [ARDcore Wallet Service](https://github.com/underdarkskies/ARDcore-wallet-service)
 
 ## Documentation
 
 - [Upgrade Notes](docs/upgrade.md)
 - [Services](docs/services.md)
-  - [Ravend](docs/services/ARDd.md) - Interface to Ravencoin Core
+  - [ARDd](docs/services/ARDd.md) - Interface to ARDcoin Core
   - [Web](docs/services/web.md) - Creates an express application over which services can expose their web/API content
 - [Development Environment](docs/development.md) - Guide for setting up a development environment
 - [Node](docs/node.md) - Details on the node constructor

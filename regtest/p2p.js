@@ -21,7 +21,7 @@ var ARDd;
 var should = chai.should();
 var assert = chai.assert;
 var sinon = require('sinon');
-var RavencoinRPC = require('ARDd-rpc');
+var ARDcoinRPC = require('ARDd-rpc');
 var transactionData = [];
 var blockHashes = [];
 var txs = [];
@@ -49,7 +49,7 @@ describe('P2P Functionality', function() {
         throw err;
       }
 
-      ARDd = require('../').services.Ravencoin({
+      ARDd = require('../').services.ARDcoin({
         spawn: {
           datadir: datadir,
           exec: path.resolve(__dirname, '../bin/ARDd')
@@ -63,15 +63,15 @@ describe('P2P Functionality', function() {
         log.error('error="%s"', err.message);
       });
 
-      log.info('Waiting for Ravencoin Core to initialize...');
+      log.info('Waiting for ARDcoin Core to initialize...');
 
       ARDd.start(function(err) {
         if (err) {
           throw err;
         }
-        log.info('Ravend started');
+        log.info('ARDd started');
 
-        client = new RavencoinRPC({
+        client = new ARDcoinRPC({
           protocol: 'http',
           host: '127.0.0.1',
           port: 30331,

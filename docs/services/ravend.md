@@ -1,6 +1,6 @@
-# Ravencoin Service
+# ARDcoin Service
 
-The Ravencoin Service is a Node.js interface to [Ravencoin](https://github.com/ARDproject/ARDcoin) for querying information about the ARDcoin block chain. It will manage starting and stopping `ARDd` or connect to several running `ARDd` processes. It uses a branch of a [branch of Ravencoin](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore/) with additional indexes for querying information about addresses and blocks. Results are cached for performance and there are several additional API methods added for common queries.
+The ARDcoin Service is a Node.js interface to [ARDcoin](https://github.com/ARDproject/ARDcoin) for querying information about the ARDcoin block chain. It will manage starting and stopping `ARDd` or connect to several running `ARDd` processes. It uses a branch of a [branch of ARDcoin](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore/) with additional indexes for querying information about addresses and blocks. Results are cached for performance and there are several additional API methods added for common queries.
 
 ## Configuration
 
@@ -110,7 +110,7 @@ node.services.ARDd.generateBlock(numberOfBlocks, function(err, blockHashes) {
 
 **Getting Block Information**
 
-It's possible to query blocks by both block hash and by height. Blocks are given as Node.js Buffers and can be parsed via Ravencore:
+It's possible to query blocks by both block hash and by height. Blocks are given as Node.js Buffers and can be parsed via ARDcore:
 
 ```js
 var blockHeight = 0;
@@ -290,7 +290,7 @@ The `summary` will have the format (values are in satoshis):
 
 
 ## Events
-The Ravencoin Service exposes two events via the Bus, and there are a few events that can be directly registered:
+The ARDcoin Service exposes two events via the Bus, and there are a few events that can be directly registered:
 
 ```js
 node.services.ARDd.on('tip', function(blockHash) {

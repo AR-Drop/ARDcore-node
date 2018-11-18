@@ -1,5 +1,5 @@
 # Services
-Ravencore Node has a service module system that can start up additional services that can include additional:
+ARDcore Node has a service module system that can start up additional services that can include additional:
 - Blockchain indexes (e.g. querying balances for addresses)
 - API methods
 - HTTP routes
@@ -37,7 +37,7 @@ If, instead, you would like to run a custom node, you can include services by in
 var ARDcore = require('ARDcore-node');
 
 //Services
-var Ravencoin = ARDcore.services.Ravencoin;
+var ARDcoin = ARDcore.services.ARDcoin;
 var Web = ARDcore.services.Web;
 
 var myNode = new ARDcore.Node({
@@ -45,7 +45,7 @@ var myNode = new ARDcore.Node({
   services: [
     {
       name: 'ARDd',
-      module: Ravencoin,
+      module: ARDcoin,
       config: {
         spawn: {
           datadir: '/home/<username>/.ARD',

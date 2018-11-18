@@ -4,7 +4,7 @@ var path = require('path');
 var async = require('async');
 var spawn = require('child_process').spawn;
 
-var RavencoinRPC = require('ARDd-rpc');
+var ARDcoinRPC = require('ARDd-rpc');
 var rimraf = require('rimraf');
 var ARDcore = require('ARDcore-lib');
 var chai = require('chai');
@@ -13,10 +13,10 @@ var should = chai.should();
 var index = require('..');
 var log = index.log;
 log.debug = function() {};
-var RavencoreNode = index.Node;
-var RavencoinService = index.services.Ravencoin;
+var ARDcoreNode = index.Node;
+var ARDcoinService = index.services.ARDcoin;
 
-describe('Ravencoin Cluster', function() {
+describe('ARDcoin Cluster', function() {
   var node;
   var daemons = [];
   var execPath = path.resolve(__dirname, '../bin/ARDd');
@@ -67,7 +67,7 @@ describe('Ravencoin Cluster', function() {
 
         var process = spawn(execPath, opts, {stdio: 'inherit'});
 
-        var client = new RavencoinRPC({
+        var client = new ARDcoinRPC({
           protocol: 'http',
           host: '127.0.0.1',
           port: nodeConf.rpcport,
@@ -103,7 +103,7 @@ describe('Ravencoin Cluster', function() {
       services: [
         {
           name: 'ARDd',
-          module: RavencoinService,
+          module: ARDcoinService,
           config: {
             connect: [
               {
@@ -136,7 +136,7 @@ describe('Ravencoin Cluster', function() {
     var regtest = ARDcore.Networks.get('regtest');
     should.exist(regtest);
 
-    node = new RavencoreNode(configuration);
+    node = new ARDcoreNode(configuration);
 
     node.on('error', function(err) {
       log.error(err);

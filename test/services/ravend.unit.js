@@ -19,14 +19,14 @@ var errors = index.errors;
 
 var Transaction = ARDcore.Transaction;
 var readFileSync = sinon.stub().returns(fs.readFileSync(path.resolve(__dirname, '../data/ARD.conf')));
-var RavencoinService = proxyquire('../../lib/services/ARDd', {
+var ARDcoinService = proxyquire('../../lib/services/ARDd', {
   fs: {
     readFileSync: readFileSync
   }
 });
-var defaultRavencoinConf = fs.readFileSync(path.resolve(__dirname, '../data/default.ARD.conf'), 'utf8');
+var defaultARDcoinConf = fs.readFileSync(path.resolve(__dirname, '../data/default.ARD.conf'), 'utf8');
 
-describe('Ravencoin Service', function() {
+describe('ARDcoin Service', function() {
   var txhex = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0704ffff001d0104ffffffff0100f2052a0100000043410496b538e853519c726a2c91e61ec11600ae1390813a627c66fb8be7947be63c52da7589379515d4e0a604f8141781e62294721166bf621e73a82cbf2342c858eeac00000000';
 
   var baseConfig = {
@@ -41,15 +41,15 @@ describe('Ravencoin Service', function() {
 
   describe('@constructor', function() {
     it('will create an instance', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       should.exist(ARDd);
     });
     it('will create an instance without `new`', function() {
-      var ARDd = RavencoinService(baseConfig);
+      var ARDd = ARDcoinService(baseConfig);
       should.exist(ARDd);
     });
     it('will init caches', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       should.exist(ARDd.utxosCache);
       should.exist(ARDd.txidsCache);
       should.exist(ARDd.balanceCache);
@@ -67,14 +67,14 @@ describe('Ravencoin Service', function() {
       should.exist(ARDd.lastTipTimeout);
     });
     it('will init clients', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.should.deep.equal([]);
       ARDd.nodesIndex.should.equal(0);
       ARDd.nodes.push({client: sinon.stub()});
       should.exist(ARDd.client);
     });
     it('will set subscriptions', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.subscriptions.should.deep.equal({
         address: {},
         rawtransaction: [],
@@ -85,7 +85,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_initDefaults', function() {
     it('will set transaction concurrency', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._initDefaults({transactionConcurrency: 10});
       ARDd.transactionConcurrency.should.equal(10);
       ARDd._initDefaults({});
@@ -95,13 +95,13 @@ describe('Ravencoin Service', function() {
 
   describe('@dependencies', function() {
     it('will have no dependencies', function() {
-      RavencoinService.dependencies.should.deep.equal([]);
+      ARDcoinService.dependencies.should.deep.equal([]);
     });
   });
 
   describe('#getAPIMethods', function() {
     it('will return spec', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var methods = ARDd.getAPIMethods();
       should.exist(methods);
       methods.length.should.equal(22);
@@ -110,7 +110,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getPublishEvents', function() {
     it('will return spec', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var events = ARDd.getPublishEvents();
       should.exist(events);
       events.length.should.equal(3);
@@ -128,7 +128,7 @@ describe('Ravencoin Service', function() {
       events[2].unsubscribe.should.be.a('function');
     });
     it('will call subscribe/unsubscribe with correct args', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.subscribe = sinon.stub();
       ARDd.unsubscribe = sinon.stub();
       var events = ARDd.getPublishEvents();
@@ -160,7 +160,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will push to subscriptions', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter = {};
       ARDd.subscribe('hashblock', emitter);
       ARDd.subscriptions.hashblock[0].should.equal(emitter);
@@ -180,7 +180,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will remove item from subscriptions', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = {};
       var emitter2 = {};
       var emitter3 = {};
@@ -201,7 +201,7 @@ describe('Ravencoin Service', function() {
       ARDd.subscriptions.hashblock[3].should.equal(emitter5);
     });
     it('will not remove item an already unsubscribed item', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = {};
       var emitter3 = {};
       ARDd.subscriptions.hashblock= [emitter1];
@@ -220,19 +220,19 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will not an invalid address', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter = new EventEmitter();
       ARDd.subscribeAddress(emitter, ['invalidaddress']);
       should.not.exist(ARDd.subscriptions.address['invalidaddress']);
     });
     it('will add a valid address', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter = new EventEmitter();
       ARDd.subscribeAddress(emitter, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
       should.exist(ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
     });
     it('will handle multiple address subscribers', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
@@ -241,7 +241,7 @@ describe('Ravencoin Service', function() {
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(2);
     });
     it('will not add the same emitter twice', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       ARDd.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
       ARDd.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
@@ -259,7 +259,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('it will remove a subscription', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
@@ -270,7 +270,7 @@ describe('Ravencoin Service', function() {
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
     });
     it('will unsubscribe subscriptions for an emitter', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
@@ -278,7 +278,7 @@ describe('Ravencoin Service', function() {
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
     });
     it('will NOT unsubscribe subscription with missing address', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
@@ -286,7 +286,7 @@ describe('Ravencoin Service', function() {
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(2);
     });
     it('will NOT unsubscribe subscription with missing emitter', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter2];
@@ -295,7 +295,7 @@ describe('Ravencoin Service', function() {
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'][0].should.equal(emitter2);
     });
     it('will remove empty addresses', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
@@ -304,7 +304,7 @@ describe('Ravencoin Service', function() {
       should.not.exist(ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
     });
     it('will unsubscribe emitter for all addresses', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
@@ -326,7 +326,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will unsubscribe emitter for all addresses', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
       ARDd.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
@@ -343,9 +343,9 @@ describe('Ravencoin Service', function() {
 
   describe('#_getDefaultConfig', function() {
     it('will generate config file from defaults', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var config = ARDd._getDefaultConfig();
-      config.should.equal(defaultRavencoinConf);
+      config.should.equal(defaultARDcoinConf);
     });
   });
 
@@ -358,7 +358,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will parse a ARD.conf file', function() {
-      var TestRavencoin = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoin = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync,
           existsSync: sinon.stub().returns(true),
@@ -368,7 +368,7 @@ describe('Ravencoin Service', function() {
           sync: sinon.stub()
         }
       });
-      var ARDd = new TestRavencoin(baseConfig);
+      var ARDd = new TestARDcoin(baseConfig);
       ARDd.options.spawn.datadir = '/tmp/.ARD';
       var node = {};
       ARDd._loadSpawnConfiguration(node);
@@ -394,7 +394,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will expand relative datadir to absolute path', function() {
-      var TestRavencoin = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoin = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync,
           existsSync: sinon.stub().returns(true),
@@ -414,14 +414,14 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new TestRavencoin(config);
+      var ARDd = new TestARDcoin(config);
       ARDd.options.spawn.datadir = './data';
       var node = {};
       ARDd._loadSpawnConfiguration(node);
       ARDd.options.spawn.datadir.should.equal('/tmp/.ARDcore/data');
     });
     it('should throw an exception if txindex isn\'t enabled in the configuration', function() {
-      var TestRavencoin = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoin = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: sinon.stub().returns(fs.readFileSync(__dirname + '/../data/badARD.conf')),
           existsSync: sinon.stub().returns(true),
@@ -430,16 +430,16 @@ describe('Ravencoin Service', function() {
           sync: sinon.stub()
         }
       });
-      var ARDd = new TestRavencoin(baseConfig);
+      var ARDd = new TestARDcoin(baseConfig);
       (function() {
         ARDd._loadSpawnConfiguration({datadir: './test'});
       }).should.throw(ARDcore.errors.InvalidState);
     });
     it('should NOT set https options if node https options are set', function() {
       var writeFileSync = function(path, config) {
-        config.should.equal(defaultRavencoinConf);
+        config.should.equal(defaultARDcoinConf);
       };
-      var TestRavencoin = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoin = proxyquire('../../lib/services/ARDd', {
         fs: {
           writeFileSync: writeFileSync,
           readFileSync: readFileSync,
@@ -465,7 +465,7 @@ describe('Ravencoin Service', function() {
           exec: 'testexec'
         }
       };
-      var ARDd = new TestRavencoin(config);
+      var ARDd = new TestARDcoin(config);
       ARDd.options.spawn.datadir = '/tmp/.ARD';
       var node = {};
       ARDd._loadSpawnConfiguration(node);
@@ -481,7 +481,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('should warn the user if reindex is set to 1 in the ARD.conf file', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var config = {
         txindex: 1,
         addressindex: 1,
@@ -497,7 +497,7 @@ describe('Ravencoin Service', function() {
       node._reindex.should.equal(true);
     });
     it('should warn if zmq port and hosts do not match', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var config = {
         txindex: 1,
         addressindex: 1,
@@ -516,7 +516,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_resetCaches', function() {
     it('will reset LRU caches', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var keys = [];
       for (var i = 0; i < 10; i++) {
         keys.push(crypto.randomBytes(32));
@@ -537,7 +537,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_tryAllClients', function() {
     it('will retry for each node client', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.tryAllInterval = 1;
       ARDd.nodes.push({
         client: {
@@ -567,7 +567,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will start using the current node index (round-robin)', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.tryAllInterval = 1;
       ARDd.nodes.push({
         client: {
@@ -598,7 +598,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get error if all clients fail', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.tryAllInterval = 1;
       ARDd.nodes.push({
         client: {
@@ -628,7 +628,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_wrapRPCError', function() {
     it('will convert ARDd-rpc error object into JavaScript error', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var error = ARDd._wrapRPCError({message: 'Test error', code: -1});
       error.should.be.an.instanceof(errors.RPCError);
       error.code.should.equal(-1);
@@ -645,7 +645,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will set height and genesis buffer', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var genesisBuffer = new Buffer([]);
       ARDd.getRawBlock = sinon.stub().callsArgWith(1, null, genesisBuffer);
       ARDd.nodes.push({
@@ -681,7 +681,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('it will handle error from getBestBlockHash', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {code: -1, message: 'error'});
       ARDd.nodes.push({
         client: {
@@ -694,7 +694,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('it will handle error from getBlock', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {});
       var getBlock = sinon.stub().callsArgWith(1, {code: -1, message: 'error'});
       ARDd.nodes.push({
@@ -709,7 +709,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('it will handle error from getBlockHash', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {});
       var getBlock = sinon.stub().callsArgWith(1, null, {
         result: {
@@ -730,7 +730,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('it will handle error from getRawBlock', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {});
       var getBlock = sinon.stub().callsArgWith(1, null, {
         result: {
@@ -768,7 +768,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       ARDd._getDefaultConf().rpcport.should.equal(8766);
     });
     it('will get default rpc port for testnet', function() {
@@ -781,7 +781,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       ARDd._getDefaultConf().rpcport.should.equal(18766);
     });
     it('will get default rpc port for regtest', function() {
@@ -795,7 +795,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       ARDd._getDefaultConf().rpcport.should.equal(18766);
     });
   });
@@ -815,7 +815,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       should.equal(ARDd._getNetworkConfigPath(), undefined);
     });
     it('will get default rpc port for testnet', function() {
@@ -828,7 +828,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       ARDd._getNetworkConfigPath().should.equal('testnet3/ARD.conf');
     });
     it('will get default rpc port for regtest', function() {
@@ -842,7 +842,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       ARDd._getNetworkConfigPath().should.equal('regtest/ARD.conf');
     });
   });
@@ -853,18 +853,18 @@ describe('Ravencoin Service', function() {
       baseConfig.node.network = ARDcore.Networks.testnet;
     });
     it('return --testnet for testnet', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.node.network = ARDcore.Networks.testnet;
       ARDd._getNetworkOption().should.equal('--testnet');
     });
     it('return --regtest for testnet', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.node.network = ARDcore.Networks.testnet;
       ARDcore.Networks.enableRegtest();
       ARDd._getNetworkOption().should.equal('--regtest');
     });
     it('return undefined for livenet', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.node.network = ARDcore.Networks.livenet;
       ARDcore.Networks.enableRegtest();
       should.equal(ARDd._getNetworkOption(), undefined);
@@ -873,7 +873,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_zmqBlockHandler', function() {
     it('will emit block', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {};
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
       ARDd._rapidProtectedUpdateTip = sinon.stub();
@@ -884,7 +884,7 @@ describe('Ravencoin Service', function() {
       ARDd._zmqBlockHandler(node, message);
     });
     it('will not emit same block twice', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {};
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
       ARDd._rapidProtectedUpdateTip = sinon.stub();
@@ -896,7 +896,7 @@ describe('Ravencoin Service', function() {
       ARDd._zmqBlockHandler(node, message);
     });
     it('will call function to update tip', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {};
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
       ARDd._rapidProtectedUpdateTip = sinon.stub();
@@ -906,7 +906,7 @@ describe('Ravencoin Service', function() {
       ARDd._rapidProtectedUpdateTip.args[0][1].should.equal(message);
     });
     it('will emit to subscribers', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {};
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
       ARDd._rapidProtectedUpdateTip = sinon.stub();
@@ -922,7 +922,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_rapidProtectedUpdateTip', function() {
     it('will limit tip updates with rapid calls', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var callCount = 0;
       ARDd._updateTip = function() {
         callCount++;
@@ -956,7 +956,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('log and emit rpc error from get block', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub();
       ARDd.on('error', function(err) {
         err.code.should.equal(-1);
@@ -972,7 +972,7 @@ describe('Ravencoin Service', function() {
       ARDd._updateTip(node, message);
     });
     it('emit synced if percentage is 100', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub().callsArgWith(0, null, 100);
       ARDd.on('synced', function() {
         done();
@@ -985,7 +985,7 @@ describe('Ravencoin Service', function() {
       ARDd._updateTip(node, message);
     });
     it('NOT emit synced if percentage is less than 100', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub().callsArgWith(0, null, 99);
       ARDd.on('synced', function() {
         throw new Error('Synced called');
@@ -1000,7 +1000,7 @@ describe('Ravencoin Service', function() {
       done();
     });
     it('log and emit error from syncPercentage', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub().callsArgWith(0, new Error('test'));
       ARDd.on('error', function(err) {
         log.error.callCount.should.equal(1);
@@ -1015,7 +1015,7 @@ describe('Ravencoin Service', function() {
       ARDd._updateTip(node, message);
     });
     it('reset caches and set height', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub();
       ARDd._resetCaches = sinon.stub();
       ARDd.on('tip', function(height) {
@@ -1036,7 +1036,7 @@ describe('Ravencoin Service', function() {
       ARDd._updateTip(node, message);
     });
     it('will NOT update twice for the same hash', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub();
       ARDd._resetCaches = sinon.stub();
       ARDd.on('tip', function() {
@@ -1064,7 +1064,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       ARDd.syncPercentage = sinon.stub();
       ARDd._resetCaches = sinon.stub();
       ARDd.node.stopping = true;
@@ -1087,7 +1087,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_getAddressesFromTransaction', function() {
     it('will get results using ARDcore.Transaction', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var wif = 'L2Gkw3kKJ6N24QcDuH4XDqt9cTqsKTVNDGz1CRZhk9cq4auDUbJy';
       var privkey = ARDcore.PrivateKey.fromWIF(wif);
       var inputAddress = privkey.toAddress(ARDcore.Networks.testnet);
@@ -1108,7 +1108,7 @@ describe('Ravencoin Service', function() {
       addresses[1].should.equal(outputAddress.toString());
     });
     it('will handle non-standard script types', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var tx = ARDcore.Transaction();
       tx.addInput(ARDcore.Transaction.Input({
         prevTxId: '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b',
@@ -1127,7 +1127,7 @@ describe('Ravencoin Service', function() {
       addresses.length.should.equal(0);
     });
     it('will handle unparsable script types or missing input script', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var tx = ARDcore.Transaction();
       tx.addOutput(ARDcore.Transaction.Output({
         script: new Buffer('4c', 'hex'),
@@ -1137,7 +1137,7 @@ describe('Ravencoin Service', function() {
       addresses.length.should.equal(0);
     });
     it('will return unique values', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var tx = ARDcore.Transaction();
       var address = ARDcore.Address('2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br');
       tx.addOutput(ARDcore.Transaction.Output({
@@ -1155,7 +1155,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_notifyAddressTxidSubscribers', function() {
     it('will emit event if matching addresses', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var address = 'RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN';
       ARDd._getAddressesFromTransaction = sinon.stub().returns([address]);
       var emitter = new EventEmitter();
@@ -1172,7 +1172,7 @@ describe('Ravencoin Service', function() {
       emitter.emit.callCount.should.equal(1);
     });
     it('will NOT emit event without matching addresses', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var address = 'RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN';
       ARDd._getAddressesFromTransaction = sinon.stub().returns([address]);
       var emitter = new EventEmitter();
@@ -1186,7 +1186,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_zmqTransactionHandler', function() {
     it('will emit to subscribers', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var expectedBuffer = new Buffer(txhex, 'hex');
       var emitter = new EventEmitter();
       ARDd.subscriptions.rawtransaction.push(emitter);
@@ -1199,7 +1199,7 @@ describe('Ravencoin Service', function() {
       ARDd._zmqTransactionHandler(node, expectedBuffer);
     });
     it('will NOT emit to subscribers more than once for the same tx', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var expectedBuffer = new Buffer(txhex, 'hex');
       var emitter = new EventEmitter();
       ARDd.subscriptions.rawtransaction.push(emitter);
@@ -1211,7 +1211,7 @@ describe('Ravencoin Service', function() {
       ARDd._zmqTransactionHandler(node, expectedBuffer);
     });
     it('will emit "tx" event', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var expectedBuffer = new Buffer(txhex, 'hex');
       ARDd.on('tx', function(buffer) {
         buffer.should.be.instanceof(Buffer);
@@ -1222,7 +1222,7 @@ describe('Ravencoin Service', function() {
       ARDd._zmqTransactionHandler(node, expectedBuffer);
     });
     it('will NOT emit "tx" event more than once for the same tx', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var expectedBuffer = new Buffer(txhex, 'hex');
       ARDd.on('tx', function() {
         done();
@@ -1242,7 +1242,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('log errors, update tip and subscribe to zmq events', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._updateTip = sinon.stub();
       ARDd._subscribeZmqEvents = sinon.stub();
       var blockEvents = 0;
@@ -1296,7 +1296,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {code: -1, message: 'error'});
       var node = {
         _tipUpdateInterval: 1,
@@ -1315,7 +1315,7 @@ describe('Ravencoin Service', function() {
       }, 100);
     });
     it('will not set interval if synced is true', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._updateTip = sinon.stub();
       ARDd._subscribeZmqEvents = sinon.stub();
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
@@ -1345,7 +1345,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_subscribeZmqEvents', function() {
     it('will call subscribe on zmq socket', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {
         zmqSubSocket: {
           subscribe: sinon.stub(),
@@ -1358,7 +1358,7 @@ describe('Ravencoin Service', function() {
       node.zmqSubSocket.subscribe.args[1][0].should.equal('rawtx');
     });
     it('will call relevant handler for rawtx topics', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._zmqTransactionHandler = sinon.stub();
       var node = {
         zmqSubSocket: new EventEmitter()
@@ -1374,7 +1374,7 @@ describe('Ravencoin Service', function() {
       node.zmqSubSocket.emit('message', topic, message);
     });
     it('will call relevant handler for hashblock topics', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._zmqBlockHandler = sinon.stub();
       var node = {
         zmqSubSocket: new EventEmitter()
@@ -1390,7 +1390,7 @@ describe('Ravencoin Service', function() {
       node.zmqSubSocket.emit('message', topic, message);
     });
     it('will ignore unknown topic types', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._zmqBlockHandler = sinon.stub();
       ARDd._zmqTransactionHandler = sinon.stub();
       var node = {
@@ -1417,12 +1417,12 @@ describe('Ravencoin Service', function() {
       var socketFunc = function() {
         return socket;
       };
-      var RavencoinService = proxyquire('../../lib/services/ARDd', {
+      var ARDcoinService = proxyquire('../../lib/services/ARDd', {
         'zeromq': {
           socket: socketFunc
         }
       });
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {};
       ARDd._initZmqSubSocket(node, 'url');
       node.zmqSubSocket.should.equal(socket);
@@ -1443,7 +1443,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('give error from client getblockchaininfo', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {
         _reindex: true,
         _reindexWait: 1,
@@ -1458,7 +1458,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will wait until sync is 100 percent', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var percent = 0.89;
       var node = {
         _reindex: true,
@@ -1481,7 +1481,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will call callback if reindex is not enabled', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {
         _reindex: false
       };
@@ -1501,7 +1501,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will give rpc from client getbestblockhash', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {code: -1, message: 'Test error'});
       var node = {
         client: {
@@ -1515,7 +1515,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give rpc from client getblock', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
         result: '00000000000000001bb82a7f5973618cfd3185ba1ded04dd852a653f92a27c45'
       });
@@ -1534,7 +1534,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will log when error is RPC_IN_WARMUP', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {code: -28, message: 'Verifying blocks...'});
       var node = {
         client: {
@@ -1548,7 +1548,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will set height and emit tip', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
         result: '00000000000000001bb82a7f5973618cfd3185ba1ded04dd852a653f92a27c45'
       });
@@ -1590,16 +1590,16 @@ describe('Ravencoin Service', function() {
       var error = new Error('Test error');
       error.code = 'ENOENT';
       readFile.onCall(1).callsArgWith(2, error);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFile: readFile
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
       ARDd.spawnStopTime = 1;
       ARDd._process = {};
       ARDd._process.kill = sinon.stub();
-      ARDd._stopSpawnedRavencoin(function(err) {
+      ARDd._stopSpawnedARDcoin(function(err) {
         if (err) {
           return done(err);
         }
@@ -1614,18 +1614,18 @@ describe('Ravencoin Service', function() {
       var error = new Error('Test error');
       error.code = 'ENOENT';
       readFile.onCall(1).callsArgWith(2, error);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFile: readFile
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
       ARDd.spawnStopTime = 1;
       ARDd._process = {};
       var error2 = new Error('Test error');
       error2.code = 'ESRCH';
       ARDd._process.kill = sinon.stub().throws(error2);
-      ARDd._stopSpawnedRavencoin(function(err) {
+      ARDd._stopSpawnedARDcoin(function(err) {
         if (err) {
           return done(err);
         }
@@ -1637,16 +1637,16 @@ describe('Ravencoin Service', function() {
     it('it will attempt to kill process with NaN', function(done) {
       var readFile = sandbox.stub();
       readFile.onCall(0).callsArgWith(2, null, '     ');
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFile: readFile
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
       ARDd.spawnStopTime = 1;
       ARDd._process = {};
       ARDd._process.kill = sinon.stub();
-      ARDd._stopSpawnedRavencoin(function(err) {
+      ARDd._stopSpawnedARDcoin(function(err) {
         if (err) {
           return done(err);
         }
@@ -1656,16 +1656,16 @@ describe('Ravencoin Service', function() {
     it('it will attempt to kill process without pid', function(done) {
       var readFile = sandbox.stub();
       readFile.onCall(0).callsArgWith(2, null, '');
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFile: readFile
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
       ARDd.spawnStopTime = 1;
       ARDd._process = {};
       ARDd._process.kill = sinon.stub();
-      ARDd._stopSpawnedRavencoin(function(err) {
+      ARDd._stopSpawnedARDcoin(function(err) {
         if (err) {
           return done(err);
         }
@@ -1685,7 +1685,7 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will give error from spawn config', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._loadSpawnConfiguration = sinon.stub();
       ARDd._loadSpawnConfiguration = sinon.stub().throws(new Error('test'));
       ARDd._spawnChildProcess(function(err) {
@@ -1694,10 +1694,10 @@ describe('Ravencoin Service', function() {
         done();
       });
     });
-    it('will give error from stopSpawnedRavencoin', function() {
-      var ARDd = new RavencoinService(baseConfig);
+    it('will give error from stopSpawnedARDcoin', function() {
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._loadSpawnConfiguration = sinon.stub();
-      ARDd._stopSpawnedRavencoin = sinon.stub().callsArgWith(0, new Error('test'));
+      ARDd._stopSpawnedARDcoin = sinon.stub().callsArgWith(0, new Error('test'));
       ARDd._spawnChildProcess(function(err) {
         err.should.be.instanceOf(Error);
         err.message.should.equal('test');
@@ -1715,7 +1715,7 @@ describe('Ravencoin Service', function() {
       };
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1723,10 +1723,10 @@ describe('Ravencoin Service', function() {
           spawn: spawn
         }
       });
-      var ARDd = new TestRavencoinService(config);
+      var ARDd = new TestARDcoinService(config);
       ARDd.spawn = {};
       ARDd._loadSpawnConfiguration = sinon.stub();
-      ARDd._stopSpawnedRavencoin = sinon.stub().callsArgWith(0, null);
+      ARDd._stopSpawnedARDcoin = sinon.stub().callsArgWith(0, null);
       ARDd.node.stopping = true;
       ARDd._spawnChildProcess(function(err) {
         err.should.be.instanceOf(Error);
@@ -1736,7 +1736,7 @@ describe('Ravencoin Service', function() {
     it('will include network with spawn command and init zmq/rpc on node', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1744,7 +1744,7 @@ describe('Ravencoin Service', function() {
           spawn: spawn
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
 
       ARDd._loadSpawnConfiguration = sinon.stub();
       ARDd.spawn = {};
@@ -1787,7 +1787,7 @@ describe('Ravencoin Service', function() {
     it('will respawn ARDd spawned process', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1795,7 +1795,7 @@ describe('Ravencoin Service', function() {
           spawn: spawn
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
       ARDd._loadSpawnConfiguration = sinon.stub();
       ARDd.spawn = {};
       ARDd.spawn.exec = 'ARDd';
@@ -1807,7 +1807,7 @@ describe('Ravencoin Service', function() {
       ARDd._initZmqSubSocket = sinon.stub();
       ARDd._checkReindex = sinon.stub().callsArg(1);
       ARDd._checkSyncedAndSubscribeZmqEvents = sinon.stub();
-      ARDd._stopSpawnedRavencoin = sinon.stub().callsArg(0);
+      ARDd._stopSpawnedARDcoin = sinon.stub().callsArg(0);
       sinon.spy(ARDd, '_spawnChildProcess');
       ARDd._spawnChildProcess(function(err) {
         if (err) {
@@ -1825,7 +1825,7 @@ describe('Ravencoin Service', function() {
     it('will emit error during respawn', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1833,7 +1833,7 @@ describe('Ravencoin Service', function() {
           spawn: spawn
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
       ARDd._loadSpawnConfiguration = sinon.stub();
       ARDd.spawn = {};
       ARDd.spawn.exec = 'ARDd';
@@ -1845,7 +1845,7 @@ describe('Ravencoin Service', function() {
       ARDd._initZmqSubSocket = sinon.stub();
       ARDd._checkReindex = sinon.stub().callsArg(1);
       ARDd._checkSyncedAndSubscribeZmqEvents = sinon.stub();
-      ARDd._stopSpawnedRavencoin = sinon.stub().callsArg(0);
+      ARDd._stopSpawnedARDcoin = sinon.stub().callsArg(0);
       sinon.spy(ARDd, '_spawnChildProcess');
       ARDd._spawnChildProcess(function(err) {
         if (err) {
@@ -1863,7 +1863,7 @@ describe('Ravencoin Service', function() {
     it('will NOT respawn ARDd spawned process if shutting down', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1880,7 +1880,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new TestRavencoinService(config);
+      var ARDd = new TestARDcoinService(config);
       ARDd._loadSpawnConfiguration = sinon.stub();
       ARDd.spawn = {};
       ARDd.spawn.exec = 'ARDd';
@@ -1892,7 +1892,7 @@ describe('Ravencoin Service', function() {
       ARDd._initZmqSubSocket = sinon.stub();
       ARDd._checkReindex = sinon.stub().callsArg(1);
       ARDd._checkSyncedAndSubscribeZmqEvents = sinon.stub();
-      ARDd._stopSpawnedRavencoin = sinon.stub().callsArg(0);
+      ARDd._stopSpawnedARDcoin = sinon.stub().callsArg(0);
       sinon.spy(ARDd, '_spawnChildProcess');
       ARDd._spawnChildProcess(function(err) {
         if (err) {
@@ -1911,7 +1911,7 @@ describe('Ravencoin Service', function() {
     it('will give error after 60 retries', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1919,7 +1919,7 @@ describe('Ravencoin Service', function() {
           spawn: spawn
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
       ARDd.startRetryInterval = 1;
       ARDd._loadSpawnConfiguration = sinon.stub();
       ARDd.spawn = {};
@@ -1941,7 +1941,7 @@ describe('Ravencoin Service', function() {
     it('will give error from check reindex', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestRavencoinService = proxyquire('../../lib/services/ARDd', {
+      var TestARDcoinService = proxyquire('../../lib/services/ARDd', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1949,7 +1949,7 @@ describe('Ravencoin Service', function() {
           spawn: spawn
         }
       });
-      var ARDd = new TestRavencoinService(baseConfig);
+      var ARDd = new TestARDcoinService(baseConfig);
 
       ARDd._loadSpawnConfiguration = sinon.stub();
       ARDd.spawn = {};
@@ -1985,7 +1985,7 @@ describe('Ravencoin Service', function() {
           exec: 'testpath'
         }
       };
-      var ARDd = new RavencoinService(config);
+      var ARDd = new ARDcoinService(config);
       ARDd.node.stopping = true;
       ARDd.startRetryInterval = 100;
       ARDd._loadTipFromNode = sinon.stub();
@@ -1997,7 +1997,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give error from loadTipFromNode after 60 retries', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._loadTipFromNode = sinon.stub().callsArgWith(1, new Error('test'));
       ARDd.startRetryInterval = 1;
       var config = {};
@@ -2008,7 +2008,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will init zmq/rpc on node', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._initZmqSubSocket = sinon.stub();
       ARDd._subscribeZmqEvents = sinon.stub();
       ARDd._loadTipFromNode = sinon.stub().callsArgWith(1, null);
@@ -2034,16 +2034,16 @@ describe('Ravencoin Service', function() {
       sandbox.restore();
     });
     it('will give error if "spawn" and "connect" are both not configured', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.options = {};
       ARDd.start(function(err) {
         err.should.be.instanceof(Error);
-        err.message.should.match(/Ravencoin configuration options/);
+        err.message.should.match(/ARDcoin configuration options/);
       });
       done();
     });
     it('will give error from spawnChildProcess', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._spawnChildProcess = sinon.stub().callsArgWith(0, new Error('test'));
       ARDd.options = {
         spawn: {}
@@ -2055,7 +2055,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give error from connectProcess', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._connectProcess = sinon.stub().callsArgWith(1, new Error('test'));
       ARDd.options = {
         connect: [
@@ -2070,7 +2070,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will push node from spawnChildProcess', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var node = {};
       ARDd._initChain = sinon.stub().callsArg(0);
       ARDd._spawnChildProcess = sinon.stub().callsArgWith(0, null, node);
@@ -2084,7 +2084,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will push node from connectProcess', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._initChain = sinon.stub().callsArg(0);
       var nodes = [{}];
       ARDd._connectProcess = sinon.stub().callsArgWith(1, null, nodes);
@@ -2104,7 +2104,7 @@ describe('Ravencoin Service', function() {
 
   describe('#isSynced', function() {
     it('will give error from syncPercentage', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub().callsArgWith(0, new Error('test'));
       ARDd.isSynced(function(err) {
         should.exist(err);
@@ -2113,7 +2113,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give "true" if percentage is 100.00', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub().callsArgWith(0, null, 100.00);
       ARDd.isSynced(function(err, synced) {
         if (err) {
@@ -2124,7 +2124,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give "true" if percentage is 99.98', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub().callsArgWith(0, null, 99.98);
       ARDd.isSynced(function(err, synced) {
         if (err) {
@@ -2135,7 +2135,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give "false" if percentage is 99.49', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub().callsArgWith(0, null, 99.49);
       ARDd.isSynced(function(err, synced) {
         if (err) {
@@ -2146,7 +2146,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give "false" if percentage is 1', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.syncPercentage = sinon.stub().callsArgWith(0, null, 1);
       ARDd.isSynced(function(err, synced) {
         if (err) {
@@ -2160,7 +2160,7 @@ describe('Ravencoin Service', function() {
 
   describe('#syncPercentage', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockchainInfo = sinon.stub().callsArgWith(0, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -2174,7 +2174,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will call client getInfo and give result', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockchainInfo = sinon.stub().callsArgWith(0, null, {
         result: {
           verificationprogress: '0.983821387'
@@ -2197,12 +2197,12 @@ describe('Ravencoin Service', function() {
 
   describe('#_normalizeAddressArg', function() {
     it('will turn single address into array', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var args = ARDd._normalizeAddressArg('address');
       args.should.deep.equal(['address']);
     });
     it('will keep an array as an array', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var args = ARDd._normalizeAddressArg(['address', 'address']);
       args.should.deep.equal(['address', 'address']);
     });
@@ -2210,7 +2210,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getAddressBalance', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressBalance: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
@@ -2224,7 +2224,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give balance', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getAddressBalance = sinon.stub().callsArgWith(1, null, {
         result: {
           received: 100000,
@@ -2259,7 +2259,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getAddressUnspentOutputs', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
@@ -2276,7 +2276,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give results from client getaddressutxos', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var expectedUtxos = [
         {
           address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
@@ -2308,7 +2308,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will use cache', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var expectedUtxos = [
         {
           address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
@@ -2375,7 +2375,7 @@ describe('Ravencoin Service', function() {
           timestamp: 1461342954813
         }
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
@@ -2448,7 +2448,7 @@ describe('Ravencoin Service', function() {
           prevout: 2
         }
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
@@ -2527,7 +2527,7 @@ describe('Ravencoin Service', function() {
           timestamp: 1461342833133
         }
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
@@ -2634,7 +2634,7 @@ describe('Ravencoin Service', function() {
           timestamp: 1461342833133
         }
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var confirmedUtxos = [];
       ARDd.nodes.push({
         client: {
@@ -2675,7 +2675,7 @@ describe('Ravencoin Service', function() {
           prevout: 1
         }
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
@@ -2718,7 +2718,7 @@ describe('Ravencoin Service', function() {
           timestamp: 1461342707725
         }
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: 'RM1FZ5Q4sKxsM1a97dLoUrjZYHZ7B6MKja',
@@ -2752,7 +2752,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('it will handle error from getAddressMempool', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, {code: -1, message: 'test'})
@@ -2768,7 +2768,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('should set query mempool if undefined', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getAddressMempool = sinon.stub().callsArgWith(1, {code: -1, message: 'test'});
       ARDd.nodes.push({
         client: {
@@ -2786,7 +2786,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_getBalanceFromMempool', function() {
     it('will sum satoshis', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var deltas = [
         {
           satoshis: -1000,
@@ -2805,7 +2805,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_getTxidsFromMempool', function() {
     it('will filter to txids', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var deltas = [
         {
           txid: 'txid0',
@@ -2824,7 +2824,7 @@ describe('Ravencoin Service', function() {
       txids[2].should.equal('txid2');
     });
     it('will not include duplicates', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var deltas = [
         {
           txid: 'txid0',
@@ -2845,7 +2845,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_getHeightRangeQuery', function() {
     it('will detect range query', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var options = {
         start: 20,
         end: 0
@@ -2854,7 +2854,7 @@ describe('Ravencoin Service', function() {
       rangeQuery.should.equal(true);
     });
     it('will get range properties', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var options = {
         start: 20,
         end: 0
@@ -2865,7 +2865,7 @@ describe('Ravencoin Service', function() {
       clone.start.should.equal(0);
     });
     it('will throw error with invalid range', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var options = {
         start: 0,
         end: 20
@@ -2878,7 +2878,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getAddressTxids', function() {
     it('will give error from _getHeightRangeQuery', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._getHeightRangeQuery = sinon.stub().throws(new Error('test'));
       ARDd.getAddressTxids('address', {}, function(err) {
         err.should.be.instanceOf(Error);
@@ -2887,7 +2887,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give rpc error from mempool query', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
@@ -2901,7 +2901,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give rpc error from txids query', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressTxids: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
@@ -2929,7 +2929,7 @@ describe('Ravencoin Service', function() {
         'ed11a08e3102f9610bda44c80c46781d97936a4290691d87244b1b345b39a693',
         'ec94d845c603f292a93b7c829811ac624b76e52b351617ca5a758e9d61a11681'
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressTxids: sinon.stub().callsArgWith(1, null, {
@@ -2954,7 +2954,7 @@ describe('Ravencoin Service', function() {
       var expectedTxids = [
         'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce'
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getAddressTxids = sinon.stub().callsArgWith(1, null, {
         result: expectedTxids.reverse()
       });
@@ -2988,7 +2988,7 @@ describe('Ravencoin Service', function() {
       var expectedTxids = [
         'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce'
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getAddressMempool = sinon.stub();
       var getAddressTxids = sinon.stub().callsArgWith(1, null, {
         result: expectedTxids.reverse()
@@ -3028,7 +3028,7 @@ describe('Ravencoin Service', function() {
       var expectedTxids = [
         'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce'
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getAddressTxids = sinon.stub().callsArgWith(1, null, {
         result: expectedTxids.reverse()
       });
@@ -3099,7 +3099,7 @@ describe('Ravencoin Service', function() {
     it('should get 0 confirmation', function() {
       var tx = new Transaction(txhex);
       tx.height = -1;
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.height = 10;
       var confirmations = ARDd._getConfirmationsDetail(tx);
       confirmations.should.equal(0);
@@ -3107,13 +3107,13 @@ describe('Ravencoin Service', function() {
     it('should get 1 confirmation', function() {
       var tx = new Transaction(txhex);
       tx.height = 10;
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.height = 10;
       var confirmations = ARDd._getConfirmationsDetail(tx);
       confirmations.should.equal(1);
     });
     it('should get 2 confirmation', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var tx = new Transaction(txhex);
       ARDd.height = 11;
       tx.height = 10;
@@ -3121,7 +3121,7 @@ describe('Ravencoin Service', function() {
       confirmations.should.equal(2);
     });
     it('should get 0 confirmation with overflow', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var tx = new Transaction(txhex);
       ARDd.height = 3;
       tx.height = 10;
@@ -3130,7 +3130,7 @@ describe('Ravencoin Service', function() {
       confirmations.should.equal(0);
     });
     it('should get 1000 confirmation', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var tx = new Transaction(txhex);
       ARDd.height = 1000;
       tx.height = 1;
@@ -3141,14 +3141,14 @@ describe('Ravencoin Service', function() {
 
   describe('#_getAddressDetailsForInput', function() {
     it('will return if missing an address', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {};
       ARDd._getAddressDetailsForInput({}, 0, result, []);
       should.not.exist(result.addresses);
       should.not.exist(result.satoshis);
     });
     it('will only add address if it matches', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {};
       ARDd._getAddressDetailsForInput({
         address: 'address1'
@@ -3157,7 +3157,7 @@ describe('Ravencoin Service', function() {
       should.not.exist(result.satoshis);
     });
     it('will instantiate if outputIndexes not defined', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {
         addresses: {}
       };
@@ -3169,7 +3169,7 @@ describe('Ravencoin Service', function() {
       result.addresses['address1'].outputIndexes.should.deep.equal([]);
     });
     it('will push to inputIndexes', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {
         addresses: {
           'address1': {
@@ -3187,14 +3187,14 @@ describe('Ravencoin Service', function() {
 
   describe('#_getAddressDetailsForOutput', function() {
     it('will return if missing an address', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {};
       ARDd._getAddressDetailsForOutput({}, 0, result, []);
       should.not.exist(result.addresses);
       should.not.exist(result.satoshis);
     });
     it('will only add address if it matches', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {};
       ARDd._getAddressDetailsForOutput({
         address: 'address1'
@@ -3203,7 +3203,7 @@ describe('Ravencoin Service', function() {
       should.not.exist(result.satoshis);
     });
     it('will instantiate if outputIndexes not defined', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {
         addresses: {}
       };
@@ -3215,7 +3215,7 @@ describe('Ravencoin Service', function() {
       result.addresses['address1'].outputIndexes.should.deep.equal([0]);
     });
     it('will push if outputIndexes defined', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {
         addresses: {
           'address1': {
@@ -3265,7 +3265,7 @@ describe('Ravencoin Service', function() {
         ],
         locktime: 0
       };
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var addresses = ['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'];
       var details = ARDd._getAddressDetailsForTransaction(tx, addresses);
       should.exist(details.addresses['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW']);
@@ -3284,7 +3284,7 @@ describe('Ravencoin Service', function() {
       var tx = {
         height: 20,
       };
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.getDetailedTransaction = sinon.stub().callsArgWith(1, null, tx);
       ARDd.height = 300;
       var addresses = {};
@@ -3305,7 +3305,7 @@ describe('Ravencoin Service', function() {
     });
     it('give error from getDetailedTransaction', function(done) {
       var txid = '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0';
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.getDetailedTransaction = sinon.stub().callsArgWith(1, new Error('test'));
       ARDd._getAddressDetailedTransaction(txid, {}, function(err) {
         err.should.be.instanceof(Error);
@@ -3320,7 +3320,7 @@ describe('Ravencoin Service', function() {
         ARDcore.Address('RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN'),
         ARDcore.Address('rAfsiNFiHsvDwEA1JsaE9Qmad5CgPVbELh'),
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var strings = ARDd._getAddressStrings(addresses);
       strings[0].should.equal('RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN');
       strings[1].should.equal('rAfsiNFiHsvDwEA1JsaE9Qmad5CgPVbELh');
@@ -3330,7 +3330,7 @@ describe('Ravencoin Service', function() {
         'RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN',
         'rAfsiNFiHsvDwEA1JsaE9Qmad5CgPVbELh',
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var strings = ARDd._getAddressStrings(addresses);
       strings[0].should.equal('RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN');
       strings[1].should.equal('rAfsiNFiHsvDwEA1JsaE9Qmad5CgPVbELh');
@@ -3340,7 +3340,7 @@ describe('Ravencoin Service', function() {
         ARDcore.Address('RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN'),
         'rAfsiNFiHsvDwEA1JsaE9Qmad5CgPVbELh',
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var strings = ARDd._getAddressStrings(addresses);
       strings[0].should.equal('RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN');
       strings[1].should.equal('rAfsiNFiHsvDwEA1JsaE9Qmad5CgPVbELh');
@@ -3350,7 +3350,7 @@ describe('Ravencoin Service', function() {
         ARDcore.Address('RJYZeWxr1Ly8YgcvJU1qD5MR9jUtk14HkN'),
         0,
       ];
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       (function() {
         ARDd._getAddressStrings(addresses);
       }).should.throw(TypeError);
@@ -3359,32 +3359,32 @@ describe('Ravencoin Service', function() {
 
   describe('#_paginateTxids', function() {
     it('slice txids based on "from" and "to" (3 to 13)', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       var paginated = ARDd._paginateTxids(txids, 3, 13);
       paginated.should.deep.equal([3, 4, 5, 6, 7, 8, 9, 10]);
     });
     it('slice txids based on "from" and "to" (0 to 3)', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       var paginated = ARDd._paginateTxids(txids, 0, 3);
       paginated.should.deep.equal([0, 1, 2]);
     });
     it('slice txids based on "from" and "to" (0 to 1)', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       var paginated = ARDd._paginateTxids(txids, 0, 1);
       paginated.should.deep.equal([0]);
     });
     it('will throw error if "from" is greater than "to"', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       (function() {
         ARDd._paginateTxids(txids, 1, 0);
       }).should.throw('"from" (1) is expected to be less than "to"');
     });
     it('will handle string numbers', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       var paginated = ARDd._paginateTxids(txids, '1', '3');
       paginated.should.deep.equal([1, 2]);
@@ -3394,7 +3394,7 @@ describe('Ravencoin Service', function() {
   describe('#getAddressHistory', function() {
     var address = '12c6DSiU4Rq3P4ZxziKxzrL5LmMBrzjrJX';
     it('will give error with "from" and "to" range that exceeds max size', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.getAddressHistory(address, {from: 0, to: 51}, function(err) {
         should.exist(err);
         err.message.match(/^\"from/);
@@ -3402,7 +3402,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give error with "from" and "to" order is reversed', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.getAddressTxids = sinon.stub().callsArgWith(2, null, []);
       ARDd.getAddressHistory(address, {from: 51, to: 0}, function(err) {
         should.exist(err);
@@ -3411,7 +3411,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give error from _getAddressDetailedTransaction', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.getAddressTxids = sinon.stub().callsArgWith(2, null, ['txid']);
       ARDd._getAddressDetailedTransaction = sinon.stub().callsArgWith(2, new Error('test'));
       ARDd.getAddressHistory(address, {}, function(err) {
@@ -3425,7 +3425,7 @@ describe('Ravencoin Service', function() {
       for (var i = 0; i < 101; i++) {
         addresses.push(address);
       }
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.maxAddressesQuery = 100;
       ARDd.getAddressHistory(addresses, {}, function(err) {
         should.exist(err);
@@ -3434,7 +3434,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('give error from getAddressTxids', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.getAddressTxids = sinon.stub().callsArgWith(2, new Error('test'));
       ARDd.getAddressHistory('address', {}, function(err) {
         should.exist(err);
@@ -3444,7 +3444,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will paginate', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._getAddressDetailedTransaction = function(txid, options, callback) {
         callback(null, txid);
       };
@@ -3468,7 +3468,7 @@ describe('Ravencoin Service', function() {
     var memtxid1 = 'b1bfa8dbbde790cb46b9763ef3407c1a21c8264b67bfe224f462ec0e1f569e92';
     var memtxid2 = 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce';
     it('will handle error from getAddressTxids', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
@@ -3492,7 +3492,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will handle error from getAddressBalance', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
@@ -3516,7 +3516,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will handle error from client getAddressMempool', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
@@ -3534,7 +3534,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('should set all properties', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
@@ -3580,7 +3580,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give error with "from" and "to" range that exceeds max size', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
@@ -3614,7 +3614,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get from cache with noTxList', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
@@ -3662,7 +3662,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will skip querying the mempool with queryMempool set to false', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getAddressMempool = sinon.stub();
       ARDd.nodes.push({
         client: {
@@ -3685,7 +3685,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give error from _paginateTxids', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getAddressMempool = sinon.stub();
       ARDd.nodes.push({
         client: {
@@ -3715,7 +3715,7 @@ describe('Ravencoin Service', function() {
     var blockhash = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
     var blockhex = '0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c0101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000';
     it('will give rcp error from client getblockhash', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getBlockHash: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
@@ -3728,7 +3728,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give rcp error from client getblock', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getBlock: sinon.stub().callsArgWith(2, {code: -1, message: 'Test error'})
@@ -3741,7 +3741,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will try all nodes for getblock', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockWithError = sinon.stub().callsArgWith(2, {code: -1, message: 'Test error'});
       ARDd.tryAllInterval = 1;
       ARDd.nodes.push({
@@ -3771,7 +3771,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get block from cache', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
@@ -3797,7 +3797,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get block by height', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
@@ -3825,7 +3825,7 @@ describe('Ravencoin Service', function() {
   describe('#getBlock', function() {
     var blockhex = '0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c0101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000';
     it('will give an rpc error from client getblock', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, {code: -1, message: 'Test error'});
       var getBlockHash = sinon.stub().callsArgWith(1, null, {});
       ARDd.nodes.push({
@@ -3840,7 +3840,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give an rpc error from client getblockhash', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'});
       ARDd.nodes.push({
         client: {
@@ -3853,7 +3853,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will getblock as ARDcore object from height', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
@@ -3875,7 +3875,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will getblock as ARDcore object', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
@@ -3897,7 +3897,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get block from cache', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
@@ -3924,7 +3924,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get block from cache with height (but not height)', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
@@ -3955,7 +3955,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getBlockHashesByTimestamp', function() {
     it('should give an rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHashes = sinon.stub().callsArgWith(3, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -3969,7 +3969,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('should get the correct block hashes', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var block1 = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
       var block2 = '000000000383752a55a0b2891ce018fd0fdc0b6352502772b034ec282b4a1bf6';
       var getBlockHashes = sinon.stub().callsArgWith(3, null, {
@@ -3991,7 +3991,7 @@ describe('Ravencoin Service', function() {
   describe('#getBlockHeader', function() {
     var blockhash = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
     it('will give error from getBlockHash', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'});
       ARDd.nodes.push({
         client: {
@@ -4003,7 +4003,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('it will give rpc error from client getblockheader', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHeader = sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'});
       ARDd.nodes.push({
         client: {
@@ -4015,7 +4015,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('it will give rpc error from client getblockhash', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHeader = sinon.stub();
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'});
       ARDd.nodes.push({
@@ -4029,7 +4029,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give result from client getblockheader (from height)', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {
         hash: '0000000000000a817cd3a74aec2f2246b59eb2cbb1ad730213e6c4a1d68ec2f6',
         version: 536870912,
@@ -4078,7 +4078,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give result from client getblockheader (from hash)', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var result = {
         hash: '0000000000000a817cd3a74aec2f2246b59eb2cbb1ad730213e6c4a1d68ec2f6',
         version: 536870912,
@@ -4128,7 +4128,7 @@ describe('Ravencoin Service', function() {
 
   describe('#_maybeGetBlockHash', function() {
     it('will not get block hash with an address', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHash = sinon.stub();
       ARDd.nodes.push({
         client: {
@@ -4145,7 +4145,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will not get block hash with non zero-nine numeric string', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHash = sinon.stub();
       ARDd.nodes.push({
         client: {
@@ -4162,7 +4162,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get the block hash if argument is a number', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: 'blockhash'
       });
@@ -4181,7 +4181,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get the block hash if argument is a number (as string)', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: 'blockhash'
       });
@@ -4200,7 +4200,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will try multiple nodes if one fails', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: 'blockhash'
       });
@@ -4226,7 +4226,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give error from getBlockHash', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'test'});
       ARDd.tryAllInterval = 1;
       ARDd.nodes.push({
@@ -4252,7 +4252,7 @@ describe('Ravencoin Service', function() {
   describe('#getBlockOverview', function() {
     var blockhash = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
     it('will handle error from maybeGetBlockHash', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd._maybeGetBlockHash = sinon.stub().callsArgWith(1, new Error('test'));
       ARDd.getBlockOverview(blockhash, function(err) {
         err.should.be.instanceOf(Error);
@@ -4260,7 +4260,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give error from client.getBlock', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, {code: -1, message: 'test'});
       ARDd.nodes.push({
         client: {
@@ -4274,7 +4274,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will give expected result', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var blockResult = {
         hash: blockhash,
         version: 536870912,
@@ -4329,7 +4329,7 @@ describe('Ravencoin Service', function() {
 
   describe('#estimateFee', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var estimateFee = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -4343,7 +4343,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will call client estimateFee and give result', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var estimateFee = sinon.stub().callsArgWith(1, null, {
         result: -1
       });
@@ -4365,7 +4365,7 @@ describe('Ravencoin Service', function() {
   describe('#sendTransaction', function(done) {
     var tx = ARDcore.Transaction(txhex);
     it('will give rpc error', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var sendRawTransaction = sinon.stub().callsArgWith(2, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -4378,7 +4378,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will send to client and get hash', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var sendRawTransaction = sinon.stub().callsArgWith(2, null, {
         result: tx.hash
       });
@@ -4395,7 +4395,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will send to client with absurd fees and get hash', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var sendRawTransaction = sinon.stub().callsArgWith(2, null, {
         result: tx.hash
       });
@@ -4412,7 +4412,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('missing callback will throw error', function() {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var sendRawTransaction = sinon.stub().callsArgWith(2, null, {
         result: tx.hash
       });
@@ -4430,7 +4430,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getRawTransaction', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -4444,7 +4444,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will try all nodes', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.tryAllInterval = 1;
       var getRawTransactionWithError = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       var getRawTransaction = sinon.stub().callsArgWith(1, null, {
@@ -4475,7 +4475,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get from cache', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(1, null, {
         result: txhex
       });
@@ -4503,7 +4503,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getTransaction', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -4517,7 +4517,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will try all nodes', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.tryAllInterval = 1;
       var getRawTransactionWithError = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       var getRawTransaction = sinon.stub().callsArgWith(1, null, {
@@ -4548,7 +4548,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will get from cache', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(1, null, {
         result: txhex
       });
@@ -4618,7 +4618,7 @@ describe('Ravencoin Service', function() {
       ]
     };
     it('should give a transaction with height and timestamp', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.nodes.push({
         client: {
           getRawTransaction: sinon.stub().callsArgWith(2, {code: -1, message: 'Test error'})
@@ -4632,7 +4632,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('should give a transaction with all properties', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(2, null, {
         result: rpcRawTransaction
       });
@@ -4689,7 +4689,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('should set coinbase to true', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       delete rawTransaction.vin[0];
       rawTransaction.vin = [
@@ -4712,7 +4712,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will not include address if address length is zero', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       rawTransaction.vout[0].scriptPubKey.addresses = [];
       ARDd.nodes.push({
@@ -4730,7 +4730,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will not include address if address length is greater than 1', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       rawTransaction.vout[0].scriptPubKey.addresses = ['one', 'two'];
       ARDd.nodes.push({
@@ -4748,7 +4748,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will handle scriptPubKey.addresses not being set', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       delete rawTransaction.vout[0].scriptPubKey['addresses'];
       ARDd.nodes.push({
@@ -4766,7 +4766,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will not include script if input missing scriptSig or coinbase', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       delete rawTransaction.vin[0].scriptSig;
       delete rawTransaction.vin[0].coinbase;
@@ -4785,7 +4785,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will set height to -1 if missing height', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       delete rawTransaction.height;
       ARDd.nodes.push({
@@ -4806,7 +4806,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getBestBlockHash', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -4820,7 +4820,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will call client getInfo and give result', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
         result: 'besthash'
       });
@@ -4842,7 +4842,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getSpentInfo', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getSpentInfo = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -4856,7 +4856,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will empty object when not found', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getSpentInfo = sinon.stub().callsArgWith(1, {message: 'test', code: -5});
       ARDd.nodes.push({
         client: {
@@ -4870,7 +4870,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will call client getSpentInfo and give result', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getSpentInfo = sinon.stub().callsArgWith(1, null, {
         result: {
           txid: 'txid',
@@ -4897,7 +4897,7 @@ describe('Ravencoin Service', function() {
 
   describe('#getInfo', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var getInfo = sinon.stub().callsArgWith(0, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -4911,7 +4911,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will call client getInfo and give result', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.node.getNetworkName = sinon.stub().returns('testnet');
       var getNetworkInfo = sinon.stub().callsArgWith(0, null, {
 		result: {
@@ -4964,7 +4964,7 @@ describe('Ravencoin Service', function() {
 
   describe('#generateBlock', function() {
     it('will give rpc error', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var generate = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       ARDd.nodes.push({
         client: {
@@ -4978,7 +4978,7 @@ describe('Ravencoin Service', function() {
       });
     });
     it('will call client generate and give result', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       var generate = sinon.stub().callsArgWith(1, null, {
         result: ['hash']
       });
@@ -5000,11 +5000,11 @@ describe('Ravencoin Service', function() {
 
   describe('#stop', function() {
     it('will callback if spawn is not set', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.stop(done);
     });
     it('will exit spawned process', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.spawn = {};
       ARDd.spawn.process = new EventEmitter();
       ARDd.spawn.process.kill = sinon.stub();
@@ -5014,7 +5014,7 @@ describe('Ravencoin Service', function() {
       ARDd.spawn.process.emit('exit', 0);
     });
     it('will give error with non-zero exit status code', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.spawn = {};
       ARDd.spawn.process = new EventEmitter();
       ARDd.spawn.process.kill = sinon.stub();
@@ -5028,7 +5028,7 @@ describe('Ravencoin Service', function() {
       ARDd.spawn.process.emit('exit', 1);
     });
     it('will stop after timeout', function(done) {
-      var ARDd = new RavencoinService(baseConfig);
+      var ARDd = new ARDcoinService(baseConfig);
       ARDd.shutdownTimeout = 300;
       ARDd.spawn = {};
       ARDd.spawn.process = new EventEmitter();

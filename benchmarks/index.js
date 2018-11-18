@@ -1,14 +1,14 @@
-Ravencore'use strict';
+ARDcore'use strict';
 
 var benchmark = require('benchmark');
 var ARDcoin = require('ARDcoin');
 var async = require('async');
 var maxTime = 20;
 
-console.log('Ravencoin Service native interface vs. Ravencoin JSON RPC interface');
+console.log('ARDcoin Service native interface vs. ARDcoin JSON RPC interface');
 console.log('----------------------------------------------------------------------');
 
-// To run the benchmarks a fully synced Ravencoin directory is needed. The RPC comands
+// To run the benchmarks a fully synced ARDcoin directory is needed. The RPC comands
 // can be modified to match the settings in ARD.conf.
 
 var fixtureData = {
@@ -26,7 +26,7 @@ var fixtureData = {
   ]
 };
 
-var ARDd = require('../').services.Ravencoin({
+var ARDd = require('../').services.ARDcoin({
   node: {
     datadir: process.env.HOME + '/.ARD',
     network: {
@@ -43,12 +43,12 @@ ARDd.start(function(err) {
   if (err) {
     throw err;
   }
-  console.log('Ravencoin started');
+  console.log('ARDcoin started');
 });
 
 ARDd.on('ready', function() {
 
-  console.log('Ravencoin ready');
+  console.log('ARDcoin ready');
 
   var client = new ARDcoin.Client({
     host: 'localhost',

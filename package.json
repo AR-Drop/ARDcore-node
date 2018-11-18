@@ -1,6 +1,6 @@
 {
   "name": "ARDcore-node",
-  "description": "Full node with extended capabilities using ARDcore and Ravencoin",
+  "description": "Full node with extended capabilities using ARDcore and ARDcoin",
   "author": "Under",
   "version": "1.0.3",
   "main": "./index.js",
