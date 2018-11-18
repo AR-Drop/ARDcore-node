@@ -15,7 +15,7 @@ A node represents a collection of services that are loaded together. For more in
 ```js
 
 var index = require('ARDcore-node');
-var ARDcoin = index.services.ARDcoin;
+var ARD = index.services.ARD;
 var Node = index.Node;
 
 var configuration = {
@@ -24,7 +24,7 @@ var configuration = {
   services: [
     {
       name: 'ARDd',
-      module: ARDcoin,
+      module: ARD,
       config: {}
     }
   ]
@@ -37,7 +37,7 @@ node.start(function() {
 });
 
 node.on('ready', function() {
-  console.log('ARDcoin Node Ready');
+  console.log('ARD Node Ready');
 });
 
 node.on('error', function(err) {

@@ -1,17 +1,17 @@
-# ARDcoin Service
+# ARD Service
 
-The ARDcoin Service is a Node.js interface to [ARDcoin](https://github.com/ARDproject/ARDcoin) for querying information about the ARDcoin block chain. It will manage starting and stopping `ARDd` or connect to several running `ARDd` processes. It uses a branch of a [branch of ARDcoin](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore/) with additional indexes for querying information about addresses and blocks. Results are cached for performance and there are several additional API methods added for common queries.
+The ARD Service is a Node.js interface to [ARD](https://github.com/ARDproject/ARD) for querying information about the ARD block chain. It will manage starting and stopping `ARDd` or connect to several running `ARDd` processes. It uses a branch of a [branch of ARD](https://github.com/underdarkskies/ARD/tree/0.15.0-ARDcore/) with additional indexes for querying information about addresses and blocks. Results are cached for performance and there are several additional API methods added for common queries.
 
 ## Configuration
 
-The default configuration will include a "spawn" configuration in "ARDd". This defines the location of the block chain database and the location of the `ARDd` daemon executable. The below configuration points to a local clone of `ARDcoin`, and will start `ARDd` automatically with your Node.js application.
+The default configuration will include a "spawn" configuration in "ARDd". This defines the location of the block chain database and the location of the `ARDd` daemon executable. The below configuration points to a local clone of `ARD`, and will start `ARDd` automatically with your Node.js application.
 
 ```json
   "servicesConfig": {
     "ARDd": {
       "spawn": {
         "datadir": "/home/ARDcore/.ARD",
-        "exec": "/home/ARDcore/ARDcoin/src/ARDd"
+        "exec": "/home/ARDcore/ARD/src/ARDd"
       }
     }
   }
@@ -26,21 +26,21 @@ It's also possible to connect to separately managed `ARDd` processes with round-
         {
           "rpchost": "127.0.0.1",
           "rpcport": 30521,
-          "rpcuser": "ARDcoin",
+          "rpcuser": "ARD",
           "rpcpassword": "local321",
           "zmqpubrawtx": "tcp://127.0.0.1:30611"
         },
         {
           "rpchost": "127.0.0.1",
           "rpcport": 30522,
-          "rpcuser": "ARDcoin",
+          "rpcuser": "ARD",
           "rpcpassword": "local321",
           "zmqpubrawtx": "tcp://127.0.0.1:30622"
         },
         {
           "rpchost": "127.0.0.1",
           "rpcport": 30523,
-          "rpcuser": "ARDcoin",
+          "rpcuser": "ARD",
           "rpcpassword": "local321",
           "zmqpubrawtx": "tcp://127.0.0.1:30633"
         }
@@ -217,7 +217,7 @@ node.services.ARDd.getAddressBalance(address, options, function(err, balance) {
 
 This method will give history of an address limited by a range of block heights by using the "start" and "end" arguments. The "start" value is the more recent, and greater, block height. The "end" value is the older, and lesser, block height. This feature is most useful for synchronization as previous history can be omitted. Furthermore for large ranges of block heights, results can be paginated by using the "from" and "to" arguments.
 
-If "queryMempool" is set as true (it is true by default), it will show unconfirmed transactions from the ARDcoin mempool. However, if you specify "start" and "end", "queryMempool" is ignored and is always false.
+If "queryMempool" is set as true (it is true by default), it will show unconfirmed transactions from the ARD mempool. However, if you specify "start" and "end", "queryMempool" is ignored and is always false.
 
 If "queryMempoolOnly" is set as true (it is false by default), it will show *only* unconfirmed transactions from mempool.
 
@@ -290,7 +290,7 @@ The `summary` will have the format (values are in satoshis):
 
 
 ## Events
-The ARDcoin Service exposes two events via the Bus, and there are a few events that can be directly registered:
+The ARD Service exposes two events via the Bus, and there are a few events that can be directly registered:
 
 ```js
 node.services.ARDd.on('tip', function(blockHash) {

@@ -1,7 +1,7 @@
 ARDcore Node
 ============
 
-A ARDcoin full node for building applications and services with Node.js. A node is extensible and can be configured to run additional services. At the minimum a node has an interface to [ARDcoin with additional indexing](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore) for more advanced address queries. Additional services can be enabled to make a node more useful such as exposing new APIs, running a block explorer and wallet service.
+A ARD full node for building applications and services with Node.js. A node is extensible and can be configured to run additional services. At the minimum a node has an interface to [ARD with additional indexing](https://github.com/underdarkskies/ARD/tree/0.15.0-ARDcore) for more advanced address queries. Additional services can be enabled to make a node more useful such as exposing new APIs, running a block explorer and wallet service.
 
 ## Install
 
@@ -10,7 +10,7 @@ npm install -g ARDcore-node
 ARDcore-node start
 ```
 
-Note: For your convenience, we distribute ARDd binaries for x86_64 Linux and x86_64 Mac OS X. Upon npm install, the binaries for your platform will be downloaded. For more detailed installation instructions, or if you want to compile the project yourself, then please see the ARDcore branch of [ARDcoin with additional indexing](https://github.com/underdarkskies/ARDcoin/tree/0.15.0-ARDcore).
+Note: For your convenience, we distribute ARDd binaries for x86_64 Linux and x86_64 Mac OS X. Upon npm install, the binaries for your platform will be downloaded. For more detailed installation instructions, or if you want to compile the project yourself, then please see the ARDcore branch of [ARD with additional indexing](https://github.com/underdarkskies/ARD/tree/0.15.0-ARDcore).
 
 ## Prerequisites
 
@@ -25,7 +25,7 @@ Note: For your convenience, we distribute ARDd binaries for x86_64 Linux and x86
 ARDcore includes a Command Line Interface (CLI) for managing, configuring and interfacing with your ARDcore Node.
 
 ```bash
-ARDcore-node create -d <ARDcoin-data-dir> mynode
+ARDcore-node create -d <ARD-data-dir> mynode
 cd mynode
 ARDcore-node install <service>
 ARDcore-node install https://github.com/yourname/helloworld
@@ -45,7 +45,7 @@ There are several add-on services available to extend the functionality of ARDco
 
 - [Upgrade Notes](docs/upgrade.md)
 - [Services](docs/services.md)
-  - [ARDd](docs/services/ARDd.md) - Interface to ARDcoin Core
+  - [ARDd](docs/services/ARDd.md) - Interface to ARD Core
   - [Web](docs/services/web.md) - Creates an express application over which services can expose their web/API content
 - [Development Environment](docs/development.md) - Guide for setting up a development environment
 - [Node](docs/node.md) - Details on the node constructor

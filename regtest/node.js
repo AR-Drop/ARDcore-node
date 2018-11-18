@@ -15,11 +15,11 @@ var node;
 
 var should = chai.should();
 
-var ARDcoinRPC = require('ARDd-rpc');
+var ARDRPC = require('ARDd-rpc');
 var index = require('..');
 var Transaction = ARDcore.Transaction;
 var ARDcoreNode = index.Node;
-var ARDcoinService = index.services.ARDcoin;
+var ARDService = index.services.ARD;
 var testWIF = 'cSdkPxkAjA4HDr5VHgsebAPDEh9Gyub4HK8UJr2DFGGqKKy4K5sG';
 var testKey;
 var client;
@@ -49,7 +49,7 @@ describe('Node Functionality', function() {
         services: [
           {
             name: 'ARDd',
-            module: ARDcoinService,
+            module: ARDService,
             config: {
               spawn: {
                 datadir: datadir,
@@ -74,11 +74,11 @@ describe('Node Functionality', function() {
           return done(err);
         }
 
-        client = new ARDcoinRPC({
+        client = new ARDRPC({
           protocol: 'http',
           host: '127.0.0.1',
           port: 30331,
-          user: 'ARDcoin',
+          user: 'ARD',
           pass: 'local321',
           rejectUnauthorized: false
         });

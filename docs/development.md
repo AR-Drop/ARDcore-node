@@ -18,14 +18,14 @@ git clone git@github.com:<yourusername>/ARDcore-node.git
 git clone git@github.com:<yourusername>/ARDcore-lib.git
 ```
 
-To develop ARDcoin or to compile from source:
+To develop ARD or to compile from source:
 
 ```bash
-git clone git@github.com:<yourusername>/ARDcoin.git
+git clone git@github.com:<yourusername>/ARD.git
 git fetch origin <branchname>:<branchname>
 git checkout <branchname>
 ```
-**Note**: See ARDcoin documentation for building ARDcoin on your platform.
+**Note**: See ARD documentation for building ARD on your platform.
 
 
 ## Install Development Dependencies
@@ -51,7 +51,7 @@ npm install
 cd ../ARDcore-node
 npm install
 ```
-**Note**: If you get a message about not being able to download ARDcoin distribution, you'll need to compile ARDd from source, and setup your configuration to use that version.
+**Note**: If you get a message about not being able to download ARD distribution, you'll need to compile ARDd from source, and setup your configuration to use that version.
 
 
 We now will setup symlinks in `ARDcore-node` *(repeat this for any other modules you're planning on developing)*:
@@ -63,10 +63,10 @@ rm -rf ARDd-rpc
 ln -s ~/ARDd-rpc
 ```
 
-And if you're compiling or developing ARDcoin:
+And if you're compiling or developing ARD:
 ```bash
 cd ../bin
-ln -sf ~/ARDcoin/src/ARDd
+ln -sf ~/ARD/src/ARDd
 ```
 
 ## Run Tests
@@ -122,7 +122,7 @@ Edit `ARDcore-node.json` with something similar to:
     "ARDd": {
       "spawn": {
         "datadir": "/home/<youruser>/.ARDd",
-        "exec": "/home/<youruser>/ARDcoin/src/ARDd"
+        "exec": "/home/<youruser>/ARD/src/ARDd"
       }
     }
   }
@@ -152,7 +152,7 @@ spentindex=1
 zmqpubrawtx=tcp://127.0.0.1:28332
 zmqpubhashblock=tcp://127.0.0.1:28332
 rpcallowip=127.0.0.1
-rpcuser=ARDcoin
+rpcuser=ARD
 rpcpassword=local321
 ```
 
